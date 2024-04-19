@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="hammer_error_oom">File size too big</string>
+    <string name="hammer_error_res">File information error</string>
+    <string name="hammer_error">File processing failure</string>
+    <string name="hammer_error_create_file">File creation failed</string>
+</resources>
