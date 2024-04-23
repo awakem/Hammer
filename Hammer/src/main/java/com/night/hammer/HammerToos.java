@@ -10,8 +10,13 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+import java.util.Random;
 
 public class HammerToos {
+    private final static SimpleDateFormat mSimpleDateFormat = new SimpleDateFormat("_yyyyMMdd_HHmmss_", Locale.CHINESE);
     private static final String TAG = "Hammer";
 
     /**
@@ -36,6 +41,7 @@ public class HammerToos {
 
     /**
      * 获取图片旋转角度
+     *
      * @param xy {@link ImageHammer}
      * @return 图片旋转角度
      */
@@ -133,5 +139,11 @@ public class HammerToos {
             Log.d(TAG, "文件重复，删除历史文件: " + delete);
         }
         return mResultFile;
+    }
+
+    static String getImageName() {
+        Date mDate = new Date(System.currentTimeMillis());
+        int mRandomInt = new Random().nextInt(9999 - 1000 + 1) + 1000;
+        return "IMG" + mSimpleDateFormat.format(mDate) + mRandomInt + ".JPG";
     }
 }

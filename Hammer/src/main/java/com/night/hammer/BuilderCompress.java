@@ -1,6 +1,11 @@
 package com.night.hammer;
 
+import android.net.Uri;
+import android.provider.DocumentsContract;
+import android.text.TextUtils;
+
 import androidx.annotation.IntRange;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import java.io.File;
@@ -8,6 +13,12 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.annotation.Documented;
+
+import androidx.annotation.WorkerThread;
+import androidx.documentfile.provider.*;
+
+import kotlin.jvm.Throws;
 
 public class BuilderCompress {
     private int maxWidth = -1;
@@ -31,6 +42,34 @@ public class BuilderCompress {
         return this;
     }
 
+    @NonNull
+    @WorkerThread
+    public File onLaunch(@Nullable Uri uri) throws Exception {
+        if (uri == null) {
+            throw new FileNotFoundException(HammerToos.getString(R.string.hammer_error_res));
+        }
+        return new CompressEngine(new ImageHammer() {
+            @Override
+            InputStream initStream() throws IOException {
+                return HammerHelp.getContext().getContentResolver().openInputStream(uri);
+            }
+
+            @Override
+            String initFileName() {
+                DocumentFile documentFile = DocumentFile.fromSingleUri(HammerHelp.getContext(), uri);
+                if (documentFile == null) {
+                    return HammerToos.getImageName();
+                }
+                String fileName = documentFile.getName();
+                if (TextUtils.isEmpty(fileName)) {
+                    return HammerToos.getImageName();
+                }
+                return fileName;
+            }
+        }, maxWidth, maxHeight, maxLength, stepSize).openTask();
+    }
+    @NonNull
+    @WorkerThread
     public File onLaunch(@Nullable File file) throws Exception {
         if (file == null || !file.exists() || !file.isFile()) {
             throw new FileNotFoundException(HammerToos.getString(R.string.hammer_error_res));
