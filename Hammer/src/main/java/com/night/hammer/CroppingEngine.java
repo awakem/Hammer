@@ -26,33 +26,32 @@ final class CroppingEngine {
         BitmapFactory.decodeStream(mProxy.open(), null, options);
         srcWidth = options.outWidth;
         srcHeight = options.outHeight;
-        HammerToos.d( "图片裁剪==>原始图片宽度: " + srcWidth + " ||原始图片高度: " + srcHeight);
+        HammerToos.d("ImageCropping==>Width: " + srcWidth + " ||Height: " + srcHeight);
     }
+
     @WorkerThread
     @NonNull
     public File openTask() throws Exception {
         Bitmap mBitmap = initSize(initBitmap());
         boolean isPNG = HammerToos.isPNG(mProxy);
-        File mResultFile = HammerToos.toFile(mProxy.open(),mProxy.getImageName());
-        if (mResultFile == null) {
-            mProxy.close();
-            throw new FileNotFoundException(HammerToos.getString(R.string.hammer_error_create_file));
-        }
+        File mResultFile = HammerToos.toFile(mProxy.open(), mProxy.getImageName());
         try (FileOutputStream mFileOutputStream = new FileOutputStream(mResultFile)) {
             boolean compress = mBitmap.compress(isPNG ? Bitmap.CompressFormat.PNG : Bitmap.CompressFormat.JPEG, 100, mFileOutputStream);
             if (!compress) {
                 mProxy.close();
+                HammerToos.d("ImageCropping==> Bitmap To File Error");
                 throw new IOException(HammerToos.getString(R.string.hammer_error));
             }
         } catch (IOException e) {
+            HammerToos.d("ImageCropping==> Bitmap To File Error: "+e.getMessage());
             throw new IOException(HammerToos.getString(R.string.hammer_error));
         } finally {
-            mProxy.close();
             if (!mBitmap.isRecycled()) {
-                HammerToos.e("图片裁剪==> 释放initSize");
+                HammerToos.d("ImageCropping==> Recycle Cropping Bitmap-3");
                 mBitmap.recycle();
                 mBitmap = null;
             }
+            mProxy.close();
         }
         return mResultFile;
     }
@@ -62,7 +61,7 @@ final class CroppingEngine {
         int width = bitmap.getWidth();
         int height = bitmap.getHeight();
         if (width == cutWidth && height == cutHeight) {
-            HammerToos.d( "图片裁剪: 尺寸合适，无需处理");
+            HammerToos.d("ImageCropping==> Return Source Resources");
             return bitmap;
         }
         //旋转角度
@@ -87,9 +86,8 @@ final class CroppingEngine {
         Bitmap mScaleBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), mMatrix, true);
         int mScaleWidth = mScaleBitmap.getWidth();
         int mScaleHeight = mScaleBitmap.getHeight();
-        HammerToos.d("图片裁剪: 缩放后宽:" + mScaleWidth + " ||缩放后高:" + mScaleHeight);
         if (!bitmap.isRecycled()) {
-            HammerToos.d("图片裁剪: 释放加载Bitmap");
+            HammerToos.d("ImageCropping==> Recycle Decode Bitmap-1");
             bitmap.recycle();
             bitmap = null;
         }
@@ -97,9 +95,8 @@ final class CroppingEngine {
         float dx = (mScaleWidth - cutWidth) / 2F;
         float dy = (mScaleHeight - cutHeight) / 2F;
         Bitmap mAngleBitmap = Bitmap.createBitmap(mScaleBitmap, (int) dx, (int) dy, cutWidth, cutHeight);
-        HammerToos.d( "图片裁剪: 裁剪后宽:" + mAngleBitmap.getWidth() + " ||裁剪后高:" + mAngleBitmap.getHeight());
         if (!mScaleBitmap.isRecycled()) {
-            HammerToos.d( "图片裁剪: 释放缩放Bitmap");
+            HammerToos.d("ImageCropping==> Recycle Scale Bitmap-2");
             mScaleBitmap.recycle();
             mScaleBitmap = null;
         }
@@ -109,8 +106,8 @@ final class CroppingEngine {
     @NonNull
     private Bitmap initBitmap() throws OutOfMemoryError, IOException {
         if (srcWidth <= 0 || srcHeight <= 0) {
-            HammerToos.e("图片裁剪==> 初始化Bitmap失败，原图尺寸异常");
             mProxy.close();
+            HammerToos.e("ImageCropping==> Resources Error");
             throw new FileNotFoundException(HammerToos.getString(R.string.hammer_error_res));
         }
         BitmapFactory.Options options = new BitmapFactory.Options();
@@ -126,6 +123,7 @@ final class CroppingEngine {
         Bitmap bitmap = BitmapFactory.decodeStream(mProxy.open(), null, options);
         if (bitmap == null) {
             mProxy.close();
+            HammerToos.e("ImageCropping==> Resources Decode Error");
             throw new OutOfMemoryError(HammerToos.getString(R.string.hammer_error_oom));
         }
         return bitmap;

@@ -33,7 +33,7 @@ final class CompressEngine {
         BitmapFactory.decodeStream(mProxy.open(), null, options);
         srcWidth = options.outWidth;
         srcHeight = options.outHeight;
-        HammerToos.d("图片压缩==>原始图片宽度: " + srcWidth + " ||原始图片高度: " + srcHeight);
+        HammerToos.d("ImageCompress==>Width: " + srcWidth + " ||Height: " + srcHeight);
     }
 
     @WorkerThread
@@ -45,10 +45,6 @@ final class CompressEngine {
     @NonNull
     private File initVolume(@NonNull Bitmap bitmap) throws IOException {
         File mResultFile = HammerToos.toFile(mProxy.open(), mProxy.getImageName());
-        if (mResultFile == null) {
-            mProxy.close();
-            throw new FileNotFoundException(HammerToos.getString(R.string.hammer_error_create_file));
-        }
         try (ByteArrayOutputStream mByteArrayOutputStream = new ByteArrayOutputStream();
              FileOutputStream mFileOutputStream = new FileOutputStream(mResultFile);
              BufferedOutputStream mBufferedOutputStream = new BufferedOutputStream(mFileOutputStream)) {
@@ -78,14 +74,16 @@ final class CompressEngine {
             //写入文件
             mBufferedOutputStream.write(mByteArrayOutputStream.toByteArray());
         } catch (IOException e) {
+            HammerToos.e("ImageCompress==> Compress Quality Error: " + e.getMessage());
             throw new IOException(HammerToos.getString(R.string.hammer_error));
         } finally {
-            mProxy.close();
             if (!bitmap.isRecycled()) {
-                HammerToos.e("图片压缩==> 释放initSize");
+                HammerToos.d("ImageCompress==> Recycle Size Bitmap-2");
                 bitmap.recycle();
                 bitmap = null;
             }
+            HammerToos.d("ImageCompress==> Close Stream");
+            mProxy.close();
         }
         return mResultFile;
     }
@@ -126,7 +124,7 @@ final class CompressEngine {
         }
         Bitmap mAngleBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), mMatrix, true);
         if (!bitmap.isRecycled()) {
-            HammerToos.e("图片压缩==> 释放initBitmap");
+            HammerToos.d("ImageCompress==> Recycle Decode Bitmap-1");
             bitmap.recycle();
             bitmap = null;
         }
@@ -137,8 +135,8 @@ final class CompressEngine {
     @NonNull
     private Bitmap initBitmap() throws OutOfMemoryError, IOException {
         if (srcWidth <= 0 || srcHeight <= 0) {
-            HammerToos.e("图片压缩==> 初始化Bitmap失败，原图尺寸异常");
             mProxy.close();
+            HammerToos.e("ImageCompress==> Resources Error");
             throw new FileNotFoundException(HammerToos.getString(R.string.hammer_error_res));
         }
         BitmapFactory.Options options = new BitmapFactory.Options();
@@ -154,6 +152,7 @@ final class CompressEngine {
         Bitmap bitmap = BitmapFactory.decodeStream(mProxy.open(), null, options);
         if (bitmap == null) {
             mProxy.close();
+            HammerToos.e("ImageCompress==>Resources Decode Error");
             throw new OutOfMemoryError(HammerToos.getString(R.string.hammer_error_oom));
         }
         return bitmap;

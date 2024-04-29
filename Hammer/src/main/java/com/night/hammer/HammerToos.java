@@ -1,6 +1,7 @@
 package com.night.hammer;
 
-import android.media.ExifInterface;
+import androidx.exifinterface.media.ExifInterface;
+
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -15,7 +16,7 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Random;
 
-public class HammerToos {
+class HammerToos {
     private final static SimpleDateFormat mSimpleDateFormat = new SimpleDateFormat("_yyyyMMdd_HHmmss_", Locale.CHINESE);
     private static final String TAG = "Hammer";
 
@@ -81,7 +82,8 @@ public class HammerToos {
 
     }
 
-    static File toFile(InputStream inputStream, String name) {
+    @NonNull
+    static File toFile(InputStream inputStream, String name) throws IOException {
         File mFile = getFile(name);
         try (FileOutputStream mFileOutputStream = new FileOutputStream(mFile)) {
             int mReadLength;
@@ -91,19 +93,7 @@ public class HammerToos {
             }
             return mFile;
         } catch (IOException e) {
-            return null;
-        }
-    }
-
-    static void e(@StringRes int id) {
-        if (HammerHelp.isDebug()) {
-            Log.e(TAG, getString(id));
-        }
-    }
-
-    static void d(@StringRes int id) {
-        if (HammerHelp.isDebug()) {
-            Log.d(TAG, getString(id));
+            return mFile;
         }
     }
 

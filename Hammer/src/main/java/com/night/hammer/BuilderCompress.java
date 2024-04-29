@@ -1,7 +1,6 @@
 package com.night.hammer;
 
 import android.net.Uri;
-import android.provider.DocumentsContract;
 import android.text.TextUtils;
 
 import androidx.annotation.IntRange;
@@ -13,12 +12,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.annotation.Documented;
 
 import androidx.annotation.WorkerThread;
 import androidx.documentfile.provider.*;
-
-import kotlin.jvm.Throws;
 
 public class BuilderCompress {
     private int maxWidth = -1;
@@ -32,7 +28,7 @@ public class BuilderCompress {
         return this;
     }
 
-    public BuilderCompress setImageMaxLength(int length) {
+    public BuilderCompress setImageMaxLength(long length) {
         this.maxLength = length;
         return this;
     }
@@ -68,6 +64,7 @@ public class BuilderCompress {
             }
         }, maxWidth, maxHeight, maxLength, stepSize).openTask();
     }
+
     @NonNull
     @WorkerThread
     public File onLaunch(@Nullable File file) throws Exception {
