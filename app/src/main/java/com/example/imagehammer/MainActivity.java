@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 try {
-                    for (int i = 0; i < 1; i++) {
+                    for (int i = 0; i < 50; i++) {
                         String mBasePath = getExternalFilesDir(Environment.DIRECTORY_DCIM).getAbsolutePath() + File.separator + "Test" + i + ".JPG";
                         Hammer.withCropping()
                                 .setImageSize(720, 360)
@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 try {
-                    for (int i = 0; i < 1; i++) {
+                    for (int i = 0; i < 50; i++) {
                         String mBasePath = getExternalFilesDir(Environment.DIRECTORY_DCIM).getAbsolutePath() + File.separator + "Test" + i + ".JPG";
                         Hammer.withCompress()
                                 .setImageMaxLength(100 * 1024)
@@ -76,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
             file.mkdirs();
         }
         new Thread(() -> {
-            for (int i = 0; i < 1; i++) {
+            for (int i = 0; i < 50; i++) {
                 File mImageFile = new File(mBasePath + "Test" + i + ".JPG");
                 Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.test);
                 try (FileOutputStream fos = new FileOutputStream(mImageFile)) {
