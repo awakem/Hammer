@@ -43,11 +43,11 @@ final class CroppingEngine {
                 throw new IOException(HammerToos.getString(R.string.hammer_error));
             }
         } catch (IOException e) {
-            HammerToos.d("ImageCropping==> Bitmap To File Error: "+e.getMessage());
+            HammerToos.d("ImageCropping==> Bitmap To File Error: " + e.getMessage());
             throw new IOException(HammerToos.getString(R.string.hammer_error));
         } finally {
             if (!mBitmap.isRecycled()) {
-                HammerToos.d("ImageCropping==> Recycle Cropping Bitmap-3");
+                HammerToos.d("ImageCropping==> Recycle Cropping Bitmap-2");
                 mBitmap.recycle();
                 mBitmap = null;
             }
@@ -83,20 +83,16 @@ final class CroppingEngine {
             mMatrix.postRotate(angle);
         }
         //缩放处理
-        Bitmap mScaleBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), mMatrix, true);
+        Bitmap mScaleBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), mMatrix, false);
         int mScaleWidth = mScaleBitmap.getWidth();
         int mScaleHeight = mScaleBitmap.getHeight();
-        if (!bitmap.isRecycled()) {
-            HammerToos.d("ImageCropping==> Recycle Decode Bitmap-1");
-            bitmap.recycle();
-            bitmap = null;
-        }
+        HammerToos.d("ImageCropping==> ScaleW:" + mScaleBitmap.getWidth() + "|ScaleH:" + mScaleBitmap.getHeight());
         //开始裁剪
         float dx = (mScaleWidth - cutWidth) / 2F;
         float dy = (mScaleHeight - cutHeight) / 2F;
         Bitmap mAngleBitmap = Bitmap.createBitmap(mScaleBitmap, (int) dx, (int) dy, cutWidth, cutHeight);
         if (!mScaleBitmap.isRecycled()) {
-            HammerToos.d("ImageCropping==> Recycle Scale Bitmap-2");
+            HammerToos.d("ImageCropping==> Recycle Scale Bitmap-1");
             mScaleBitmap.recycle();
             mScaleBitmap = null;
         }
