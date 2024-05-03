@@ -1,7 +1,9 @@
 package com.night.hammer;
 
+import androidx.annotation.Nullable;
 import androidx.exifinterface.media.ExifInterface;
 
+import android.graphics.Bitmap;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -76,25 +78,33 @@ class HammerToos {
         } finally {
             if (mCacheFile != null) {
                 boolean delete = mCacheFile.delete();
-                Log.d(TAG, "获取图片旋转角度缓存图片删除结果: " + delete);
+                d("Delete temporary conversion file: " + delete);
             }
         }
 
     }
 
-    @NonNull
-    static File toFile(InputStream inputStream, String name) throws IOException {
-        File mFile = getFile(name);
-        try (FileOutputStream mFileOutputStream = new FileOutputStream(mFile)) {
-            int mReadLength;
-            byte[] buffer = new byte[1024];
-            while ((mReadLength = inputStream.read(buffer)) != -1) {
-                mFileOutputStream.write(buffer, 0, mReadLength);
-            }
-            return mFile;
-        } catch (IOException e) {
-            return mFile;
+    static File getImagePath(String name) {
+        File mBaseFile = HammerHelp.getContext().getExternalCacheDir();
+        if (mBaseFile == null) {
+            mBaseFile = HammerHelp.getContext().getCacheDir();
         }
+        String folderPath = mBaseFile.getAbsolutePath() + File.separator + "TemporaryCache" + File.separator;
+        File mFolderPath = new File(folderPath);
+        if (mFolderPath.exists() && mFolderPath.isFile()) {
+            folderPath = folderPath + "Copy" + File.separator;
+            d("The temporary directory has the same name");
+        }
+        if (!mFolderPath.exists() || !mFolderPath.isDirectory()) {
+            boolean mkdirs = mFolderPath.mkdirs();
+            d("Temporary directory does not exist, directory creation result: " + mkdirs);
+        }
+        File mResultFile = new File(folderPath + name);
+        if (mResultFile.exists() && mResultFile.isFile()) {
+            boolean delete = mResultFile.delete();
+            d("File duplication, file deletion result: " + delete);
+        }
+        return mResultFile;
     }
 
 
@@ -110,30 +120,32 @@ class HammerToos {
         }
     }
 
-
-    @NonNull
-    private static File getFile(String name) {
-        File mBaseFile = HammerHelp.getContext().getExternalCacheDir();
-        if (mBaseFile == null) {
-            mBaseFile = HammerHelp.getContext().getCacheDir();
-        }
-        String folderPath = mBaseFile.getAbsolutePath() + File.separator + "TemporaryCache" + File.separator;
-        File mFolderPath = new File(folderPath);
-        if (!mFolderPath.exists() || !mFolderPath.isDirectory()) {
-            boolean mkdirs = mFolderPath.mkdirs();
-            Log.d(TAG, "临时文件夹创建结果: " + mkdirs);
-        }
-        File mResultFile = new File(folderPath + name);
-        if (mResultFile.exists() && mResultFile.isFile()) {
-            boolean delete = mResultFile.delete();
-            Log.d(TAG, "文件重复，删除历史文件: " + delete);
-        }
-        return mResultFile;
-    }
-
     static String getImageName() {
         Date mDate = new Date(System.currentTimeMillis());
         int mRandomInt = new Random().nextInt(9999 - 1000 + 1) + 1000;
         return "IMG" + mSimpleDateFormat.format(mDate) + mRandomInt + ".JPG";
+    }
+
+    static void toRecycledBitmap(@Nullable Bitmap bitmap, String msg) {
+        if (bitmap == null || bitmap.isRecycled()) {
+            return;
+        }
+        d(msg);
+        bitmap.recycle();
+    }
+
+    @NonNull
+    private static File toFile(InputStream inputStream, String name) throws IOException {
+        File mFile = getImagePath(name);
+        try (FileOutputStream mFileOutputStream = new FileOutputStream(mFile)) {
+            int mReadLength;
+            byte[] buffer = new byte[1024];
+            while ((mReadLength = inputStream.read(buffer)) != -1) {
+                mFileOutputStream.write(buffer, 0, mReadLength);
+            }
+            return mFile;
+        } catch (IOException e) {
+            return mFile;
+        }
     }
 }

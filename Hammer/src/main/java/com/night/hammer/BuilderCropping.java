@@ -39,7 +39,7 @@ public class BuilderCropping {
             String initFileName() {
                 return file.getName();
             }
-        }, mWidth, mHeight).openTask();
+        }, mWidth, mHeight).onHammer();
     }
     @NonNull
     @WorkerThread
@@ -65,6 +65,6 @@ public class BuilderCropping {
                 }
                 return fileName;
             }
-        }, mWidth, mHeight).openTask();
+        }, mWidth, mHeight).onHammer();
     }
 }

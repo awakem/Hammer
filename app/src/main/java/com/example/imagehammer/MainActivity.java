@@ -33,10 +33,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 try {
-                    for (int i = 0; i < 50; i++) {
+                    for (int i = 0; i < 1; i++) {
                         String mBasePath = getExternalFilesDir(Environment.DIRECTORY_DCIM).getAbsolutePath() + File.separator + "Test" + i + ".JPG";
                         Hammer.withCropping()
-                                .setImageSize(1080, 1920)
+                                .setImageSize(720, 360)
                                 .onLaunch(new File(mBasePath));
                     }
                 } catch (Exception e) {
@@ -54,12 +54,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 try {
-                    for (int i = 0; i < 50; i++) {
+                    for (int i = 0; i < 1; i++) {
                         String mBasePath = getExternalFilesDir(Environment.DIRECTORY_DCIM).getAbsolutePath() + File.separator + "Test" + i + ".JPG";
                         Hammer.withCompress()
                                 .setImageMaxLength(100 * 1024)
-                                .setImageMaxSize(1080, 1920)
-                                .setStep(2)
+                                .setImageMaxSize(480, 480)
+                                .setStep(5)
                                 .onLaunch(new File(mBasePath));
                     }
                 } catch (Exception e) {
@@ -76,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
             file.mkdirs();
         }
         new Thread(() -> {
-            for (int i = 0; i < 50; i++) {
+            for (int i = 0; i < 1; i++) {
                 File mImageFile = new File(mBasePath + "Test" + i + ".JPG");
                 Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.test);
                 try (FileOutputStream fos = new FileOutputStream(mImageFile)) {

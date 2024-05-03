@@ -62,7 +62,7 @@ public class BuilderCompress {
                 }
                 return fileName;
             }
-        }, maxWidth, maxHeight, maxLength, stepSize).openTask();
+        }, maxWidth, maxHeight, maxLength, stepSize).onHammer();
     }
 
     @NonNull
@@ -81,6 +81,6 @@ public class BuilderCompress {
             String initFileName() {
                 return file.getName();
             }
-        }, maxWidth, maxHeight, maxLength, stepSize).openTask();
+        }, maxWidth, maxHeight, maxLength, stepSize).onHammer();
     }
 }
