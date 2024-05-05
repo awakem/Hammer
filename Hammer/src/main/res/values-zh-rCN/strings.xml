@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="hammer_error_oom">任务执行失败: 图像无法读取</string>
+    <string name="hammer_error_res">任务执行失败: 图像无法解析</string>
+    <string name="hammer_error_param_cut">任务执行失败: 图片裁剪宽或高尺寸小于等于0</string>
+</resources>

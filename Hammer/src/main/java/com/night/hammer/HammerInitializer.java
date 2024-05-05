@@ -13,7 +13,7 @@ public class HammerInitializer implements Initializer<Boolean> {
     @NonNull
     @Override
     public Boolean create(@NonNull Context context) {
-        HammerHelp.initialization(context.getApplicationContext());
+        Hammer.initialization(context);
         return true;
     }
 

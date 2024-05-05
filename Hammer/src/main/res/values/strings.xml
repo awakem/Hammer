@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="hammer_error_oom">File size too big</string>
-    <string name="hammer_error_res">File information error</string>
-    <string name="hammer_error">File processing failure</string>
-    <string name="hammer_error_create_file">File creation failed</string>
+    <string name="hammer_error_oom">Mission execution failed: Image cannot be read</string>
+    <string name="hammer_error_res">Mission execution failed: Image cannot be parsed</string>
+    <string name="hammer_error_param_cut">Mission execution failed: Image cutting width or height = 0</string>
 </resources>

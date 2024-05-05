@@ -35,6 +35,9 @@ final class CroppingEngine {
     @WorkerThread
     @NonNull
     public File onHammer() throws Exception {
+        if (cutWidth <= 0 || cutHeight <= 0) {
+            throw new RuntimeException(HammerToos.getString(R.string.hammer_error_param_cut));
+        }
         Bitmap mSourceBitmap = null;
         Bitmap mScaleBitmap = null;
         Bitmap mAngleBitmap = null;
@@ -46,7 +49,7 @@ final class CroppingEngine {
             }
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inJustDecodeBounds = false;
-            if ((cutWidth <= 0 && cutHeight <= 0) || (srcWidth <= cutWidth || srcHeight <= cutHeight)) {
+            if (srcWidth <= cutWidth || srcHeight <= cutHeight) {
                 options.inSampleSize = 1;
             } else {
                 //取最小可缩小倍数

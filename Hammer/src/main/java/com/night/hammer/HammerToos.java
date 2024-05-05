@@ -29,7 +29,7 @@ class HammerToos {
      * @return 资源字符
      */
     static String getString(@StringRes int id) {
-        return HammerHelp.getContext().getString(id);
+        return Hammer.getContext().getString(id);
     }
 
     /**
@@ -85,9 +85,9 @@ class HammerToos {
     }
 
     static File getImagePath(String name) {
-        File mBaseFile = HammerHelp.getContext().getExternalCacheDir();
+        File mBaseFile = Hammer.getContext().getExternalCacheDir();
         if (mBaseFile == null) {
-            mBaseFile = HammerHelp.getContext().getCacheDir();
+            mBaseFile = Hammer.getContext().getCacheDir();
         }
         String folderPath = mBaseFile.getAbsolutePath() + File.separator + "TemporaryCache" + File.separator;
         File mFolderPath = new File(folderPath);
@@ -102,20 +102,20 @@ class HammerToos {
         File mResultFile = new File(folderPath + name);
         if (mResultFile.exists() && mResultFile.isFile()) {
             boolean delete = mResultFile.delete();
-            d("File duplication, file deletion result: " + delete);
+            d("File repeat, file deletion result: " + delete);
         }
         return mResultFile;
     }
 
 
     static void e(String msg) {
-        if (HammerHelp.isDebug()) {
+        if (Hammer.isDebug()) {
             Log.e(TAG, msg);
         }
     }
 
     static void d(String msg) {
-        if (HammerHelp.isDebug()) {
+        if (Hammer.isDebug()) {
             Log.d(TAG, msg);
         }
     }
